@@ -12,11 +12,13 @@ class SignupRequest(BaseModel):
     password: str
 
 @router.post("/signup")
-def signup(request: SignupRequest):
+async def signup(request: SignupRequest):
     db_manager = DatabaseManager()
 
     # Check if the email is already registered
-    result = db_manager.execute_query(f"SELECT * FROM users WHERE email='{request.email}'")
+    query = "SELECT * FROM users WHERE email=%s"
+    params = (request.email,)  # 튜플로 파라미터 전달
+    result = db_manager.execute_query(query, params)
     if result:
         raise HTTPException(status_code=400, detail="Email already registered")
 
@@ -24,8 +26,8 @@ def signup(request: SignupRequest):
     hashed_password = pwd_context.hash(request.password)
 
     # Insert the new user into the database
-    db_manager.execute_query(
-        f"INSERT INTO users (fullname, email, password) VALUES ('{request.fullname}', '{request.email}', '{hashed_password}')"
-    )
+    query = "INSERT INTO users (fullname, email, password) VALUES (%s, %s, %s)"
+    params = (request.fullname, request.email, hashed_password)  # 튜플로 파라미터 전달
+    db_manager.execute_query(query, params)
 
     return {"message": "User created successfully"}

@@ -15,8 +15,8 @@ class DatabaseManager:
             )
         return cls._instance
 
-    def execute_query(self, query):
-        cur = self._conn.cursor()
-        cur.execute(query)
-        result = cur.fetchall()
+    def execute_query(self, query, params):
+        with self._conn.cursor() as cur:
+            cur.execute(query, params)
+            result = cur.fetchall()
         return result
