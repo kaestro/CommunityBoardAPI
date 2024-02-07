@@ -16,7 +16,16 @@ class DatabaseManager:
         return cls._instance
 
     def execute_query(self, query, params):
-        with self._conn.cursor() as cur:
-            cur.execute(query, params)
-            result = cur.fetchall()
-        return result
+        try:
+            with self._conn.cursor() as cur:
+                cur.execute(query, params)
+                if query.lower().startswith("select"):
+                    result = cur.fetchall()
+                else:
+                    result = None
+            self._conn.commit()
+        except Exception as e:
+            self._conn.rollback()
+            print(f"An error occurred: {e}")
+            result = None
+        return result        
