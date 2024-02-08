@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers.account import signup, login, logout
+from .routers.user import signup, login, logout
 
 app = FastAPI()
 
