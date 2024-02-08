@@ -1,5 +1,9 @@
 import redis
 
+# 현재는 redis라는 커다란 객체를 session을 유지하는 key, value
+# 저장소로 사용하고 있고, 이는 비효율적이다.
+# 이를 해결하기 위해 추후에 다른 캐시들과 함께 사용할 확장성 있는
+# 형태로의 리팩토링이 필요하다.
 class CacheManager:
     _instance = None
 
@@ -14,3 +18,6 @@ class CacheManager:
 
     def get(self, key):
         return self._redis.get(key)
+    
+    def delete(self, key):
+        self._redis.delete(key)
