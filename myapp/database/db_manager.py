@@ -8,7 +8,7 @@ class DatabaseManager:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             # Replace the connection string with your actual connection string
-            engine = create_engine('postgresql://user:password@localhost/dbname')
+            engine = create_engine('postgresql://developer:devpassword@127.0.0.1:25000/developer')
             cls._instance._Session = sessionmaker(bind=engine)
         return cls._instance
 
