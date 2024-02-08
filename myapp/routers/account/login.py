@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Header, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from pydantic import BaseModel
@@ -42,33 +42,43 @@ def authenticate_user(db_manager, email: str, password: str):
         return False
     return user[0]
 
-# 사용자 정보를 기반으로 access token을 생성하는 helper function
+# 사용자 정보를 기반으로 access token을 생성하고 이를 캐시 상에
+# 저장해 로그인을 구현한 뒤, access token을 반환한다.
+# access token은 사용자의 session ID로 사용된다.
+# session ID가 이미 존재한다면, 기존 session ID를 반환한다.
 @router.post("/login", response_model=Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), session_id: str = Header(None)):
     db_manager = DatabaseManager()
     user = authenticate_user(db_manager, form_data.username, form_data.password)
+    # 이메일이 등록돼있지 않은 경우
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    if not user:
+    # 비밀번호가 틀린 경우
+    elif user is False:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # Create a new session ID
-    session_id = str(uuid.uuid4())
-    
-    # Store the session data in the cache
+    # Get the cache manager
     cache_manager = CacheManager()
-    cache_manager.set(session_id, user[2])
-    # print that cache_manager has successfully set the session_id
-    # with the user email and message that readable by human
-    print(f"cache_manager has successfully set the session_id: {session_id} with the user email: {user[2]}")
+    
+    # 이미 session ID가 존재하고, 이 session ID가 이메일과 일치하는 경우
+    # 기존 session ID를 반환한다.
+    if session_id is not None and cache_manager.get(session_id) == user[2]:
+        print(f"cache_manager has successfully retrieved the session_id: {session_id} for the user email: {user[2]}")
+    # session ID가 존재하지 않거나, 이메일과 일치하지 않는 경우
+    # 새로운 session ID를 생성하고, 이를 캐시에 저장한다.
+    # 이후 session ID를 반환한다.
+    else:
+        session_id = str(uuid.uuid4())
+        cache_manager.set(session_id, user[2])
+        print(f"cache_manager has successfully set the session_id: {session_id} for the user email: {user[2]}")
     
     # Return the session ID as the access token
     return {"access_token": session_id, "token_type": "bearer"}

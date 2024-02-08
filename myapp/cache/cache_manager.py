@@ -13,8 +13,8 @@ class CacheManager:
             cls._instance._redis = redis.Redis(host='127.0.0.1', port=25100, db=0)
         return cls._instance
 
-    def set(self, key, value):
-        self._redis.set(key, value)
+    def set(self, key, value, expire_time=3600):
+        self._redis.set(key, value, expire_time)
 
     def get(self, key):
         return self._redis.get(key)

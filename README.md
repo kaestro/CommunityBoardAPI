@@ -17,3 +17,8 @@ Traceback (most recent call last):
     version = _bcrypt.__about__.__version__
               ^^^^^^^^^^^^^^^^^
 AttributeError: module 'bcrypt' has no attribute '__about__' 
+
+## 테스트에 사용중인 email/pw
+
+email: didme07@gmail.com
+pw: didme07@gmail.com
