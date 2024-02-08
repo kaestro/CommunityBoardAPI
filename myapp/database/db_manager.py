@@ -28,4 +28,4 @@ class DatabaseManager:
             self._conn.rollback()
             print(f"An error occurred: {e}")
             result = None
-        return result        
+        return result
