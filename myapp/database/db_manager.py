@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 class DatabaseManager:
     _instance = None
+    Base = declarative_base()
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:

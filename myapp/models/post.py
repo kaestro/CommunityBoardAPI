@@ -2,11 +2,9 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from ..database.db_manager import DatabaseManager
 
-Base = declarative_base()
-
-class Post(Base):
+class Post(DatabaseManager.Base):
     __tablename__ = 'posts'
 
     id = Column(Integer, primary_key=True)

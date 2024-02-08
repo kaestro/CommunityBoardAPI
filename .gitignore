@@ -3,4 +3,6 @@ Lib
 Include
 pyvenv.cfg
 Scripts
+# 미작성된 util. 후에 main에서 router를 통합해서 입력받도록 수정할 예정
+utils 
 __pycache__
