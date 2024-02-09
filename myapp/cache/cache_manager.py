@@ -28,3 +28,8 @@ class CacheManager:
         if value is not None:
             self._redis.set(key, value, expire_time)
             print(f"Session extended for {value}")
+
+    def print_all(self):
+        for key in self._redis.scan_iter():
+            value = self._redis.get(key)
+        print(f"Key: {key}, Value: {value}")
