@@ -1,6 +1,6 @@
 from fastapi import Depends, FastAPI
 from .routers.user import signup, login, logout
-from .routers.board import create
+from .routers.board import create, update
 from .auth import get_current_user_email
 
 app = FastAPI()
@@ -12,6 +12,7 @@ app.include_router(login.router, prefix="/user")
 app.include_router(logout.router, prefix="/user")
 
 app.include_router(create.router, prefix="/board")
+app.include_router(update.router, prefix="/board")
 
 @app.get("/")
 async def root():

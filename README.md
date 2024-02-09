@@ -22,3 +22,8 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 
 * email: didme07@gmail.com, didme08@gmail.com
 * pw: didme07@gmail.com, didme08@gmail.com
+
+## 테스트에 추가된 Board
+
+* 1;"True Board";true;8
+* 2;"False Board";false;8
