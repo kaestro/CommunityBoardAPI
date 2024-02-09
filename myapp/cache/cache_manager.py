@@ -1,9 +1,9 @@
 import redis
 
-# 현재는 redis라는 커다란 객체를 session을 유지하는 key, value
-# 저장소로 사용하고 있고, 이는 비효율적이다.
-# 이를 해결하기 위해 추후에 다른 캐시들과 함께 사용할 확장성 있는
-# 형태로의 리팩토링이 필요하다.
+# TODO
+# 1. redis가 아닌 별개의 캐시 서버를 사용하게 될 경우에 대응하기
+# 편하게 수정할 필요가 있는가?
+# 2. 키 만료 시간, host, port 등을 환경변수로부터 읽어오도록 수정한다.
 class CacheManager:
     _instance = None
 

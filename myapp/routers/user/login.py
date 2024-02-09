@@ -18,6 +18,10 @@ class Token(BaseModel):
 
 router = APIRouter()
 
+## TODO
+# 현재 token으로 사용하고 있는 session_id는 uuid를 통해
+# 간편하게 생성하였지만, 보안성이 부족할 수 있다.
+# 추후에 oauth2를 통해 token을 생성하도록 수정하여 보안성을 높일 수 있다.
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 # 비밀번호를 해시화하기 위한 helper class
