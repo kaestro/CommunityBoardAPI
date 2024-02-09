@@ -21,7 +21,9 @@ def create_post(post: PostCreate, user_email: str = Depends(get_current_user_ema
 
     # 본인이 조회할 수 있는 게시판인지 확인
     target_board = database_session.query(Board).filter_by(id=post.board_id).first()
-    if target_board is None or (target_board.user_id != user_id and not target_board.public):
+    if target_board is None:
+        raise HTTPException(status_code=404, detail="Board not found")
+    elif target_board.user_id != user_id and not target_board.public:
         raise HTTPException(status_code=403, detail="Cannot post to board not owned by user or not public")
 
     # 새 게시글 생성
