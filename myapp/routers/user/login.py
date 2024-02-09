@@ -59,9 +59,14 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session_id: st
         )
     
     cache_manager = CacheManager()
-    
-    if session_id is not None and cache_manager.get(session_id) == user.email:
+
+    ## TODO
+    # 현재 cache_manager를 통해 session_id를 저장하고 있는데,
+    # 이 때문에 login 더블체크가 안되던 지점을 확인하고 수정.
+    # 동일한 알고리즘을 통해 확인하던 다른 코드들 있는지 여부 확인 필요
+    if session_id is not None and cache_manager.get(session_id).decode("utf-8") == user.email:
         print(f"cache_manager has successfully retrieved the session_id: {session_id} for the user email: {user.email}")
+        raise HTTPException(status_code=400, detail="User is already logged in")
     else:
         session_id = str(uuid.uuid4())
         cache_manager.set(session_id, user.email)
