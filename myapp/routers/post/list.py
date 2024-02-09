@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
 
 from ...database.db_manager import DatabaseManager
@@ -10,7 +10,7 @@ from ...auth import get_current_user_email, get_user_session_and_id
 router = APIRouter()
 
 @router.get("/list/{board_id}")
-def list_posts(board_id: int, user_email: str = Depends(get_current_user_email)):
+def list_posts(board_id: int, limit: int = Query(10), offset: int = Query(0), user_email: str = Depends(get_current_user_email)):
     database_session, user_email, user_id = get_user_session_and_id(user_email, DatabaseManager, User)
 
     # 본인이 조회할 수 있는 게시판인지 확인
@@ -22,4 +22,8 @@ def list_posts(board_id: int, user_email: str = Depends(get_current_user_email))
 
     # 게시글 목록 조회
     posts = database_session.query(Post).filter_by(board_id=board_id).all()
+
+    # pagination 적용
+    posts = posts[offset : offset + limit]
+
     return [{"id": post.id, "title": post.title, "content": post.content} for post in sorted(posts, key=lambda post: post.id)]
