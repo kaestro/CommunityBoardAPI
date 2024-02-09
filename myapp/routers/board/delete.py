@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from ...database.db_manager import DatabaseManager
 from ...models.board import Board
 from ...models.user import User
-from ...auth import get_current_user_email
+from ...auth import get_current_user_email, get_user_session_and_id
 
 class BoardDelete(BaseModel):
     id: int
@@ -13,24 +13,17 @@ router = APIRouter()
 
 @router.delete("/delete")
 def delete_board(board: BoardDelete, user_email: str = Depends(get_current_user_email)):
-    # 세션 확인
-    if user_email is None:
-        raise HTTPException(status_code=401, detail="User not logged in")
-
-    # 데이터베이스 세션 가져오기
-    session = DatabaseManager().get_session()
-    user_email = user_email.decode("utf-8")
-    user_id = session.query(User).filter_by(email=user_email).first().id
+    db_session, user_email, user_id = get_user_session_and_id(user_email, DatabaseManager, User)
 
     # 유저가 소유한 게시판인지 확인
-    target_board = session.query(Board).filter_by(id=board.id).first()
+    target_board = db_session.query(Board).filter_by(id=board.id).first()
     if target_board is None:
         raise HTTPException(status_code=404, detail="Board not found")
     if target_board.user_id != user_id:
         raise HTTPException(status_code=403, detail="Cannot delete board not owned by user")
 
     # 게시판 삭제
-    session.delete(target_board)
-    session.commit()
+    db_session.delete(target_board)
+    db_session.commit()
 
     return {"message": "Board deleted successfully"}
