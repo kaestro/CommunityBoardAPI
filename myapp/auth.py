@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from .cache.cache_manager import CacheManager
 from typing import Tuple
+from sqlalchemy.orm import Session
 
 # 해당 요청이 들어올 경우, 세션 ID를 헤더에서 가져온다.
 def get_session_id(session_id: str = Header(None)):

@@ -27,3 +27,4 @@ class CacheManager:
         value = self._redis.get(key)
         if value is not None:
             self._redis.set(key, value, expire_time)
+            print(f"Session extended for {value}")
