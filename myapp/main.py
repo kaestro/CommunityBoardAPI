@@ -1,6 +1,6 @@
 from fastapi import Depends, FastAPI
 from .routers.user import signup, login, logout
-from .routers.board import create as board_create, update as board_update, delete as board_delete, list as board_list
+from .routers.board import create as board_create, update as board_update, delete as board_delete, list as board_list, get as board_get
 from .routers.post import create as post_create, update as post_update, delete as post_delete, get as post_get, list as post_list
 from .auth import get_current_user_email
 
@@ -16,6 +16,7 @@ app.include_router(board_create.router, prefix="/board")
 app.include_router(board_update.router, prefix="/board")
 app.include_router(board_delete.router, prefix="/board")
 app.include_router(board_list.router, prefix="/board")
+app.include_router(board_get.router, prefix="/board")
 
 app.include_router(post_create.router, prefix="/post")
 app.include_router(post_update.router, prefix="/post")
