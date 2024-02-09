@@ -15,10 +15,10 @@ class SignupRequest(BaseModel):
 @router.post("/signup")
 async def signup(request: SignupRequest):
     db_manager = DatabaseManager()
-    session = db_manager.get_session()
+    db_session = db_manager.get_session()
 
     # Check if the email is already registered
-    user = session.query(User).filter(User.email == request.email).first()
+    user = db_session.query(User).filter(User.email == request.email).first()
     if user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
@@ -27,7 +27,7 @@ async def signup(request: SignupRequest):
 
     # Insert the new user into the database
     new_user = User(fullname=request.fullname, email=request.email, password=hashed_password)
-    session.add(new_user)
-    session.commit()
+    db_session.add(new_user)
+    db_session.commit()
 
     return {"message": "User created successfully"}
