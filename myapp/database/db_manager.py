@@ -2,6 +2,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+# TODO
+# 1. singleton pattern을 사용해서 구현된 객체를, 의존성 주입을 통해
+#   다른 객체에 주입할 수 있도록 수정한다. 대신 연결 수 제한 등을 고려해야 한다.
+# 2. create_engine의 connection string을 환경변수로부터 읽어오도록 수정한다.
 class DatabaseManager:
     _instance = None
     Base = declarative_base()

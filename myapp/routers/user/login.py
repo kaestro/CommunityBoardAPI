@@ -33,6 +33,10 @@ def authenticate_user(db_manager, email: str, password: str):
         return False
     return user
 
+# TODO
+# 보안성이 모자랄 수 있어, 최초 로그인 시도시 다음과 같은 추가적인 보안성을 제공할 수 있다.
+# 1. 로그인 시도 횟수 및 시간 제한
+# 2. salt 사용
 @router.post("/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), session_id: str = Header(None)):
     db_manager = DatabaseManager()
