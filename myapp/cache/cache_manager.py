@@ -22,3 +22,8 @@ class CacheManager:
     
     def delete(self, key):
         self._redis.delete(key)
+
+    def extend_session(self, key, expire_time=3600):
+        value = self._redis.get(key)
+        if value is not None:
+            self._redis.set(key, value, expire_time)
