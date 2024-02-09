@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
@@ -11,7 +11,7 @@ from ...auth import get_current_user_email
 router = APIRouter()
 
 @router.get("/list")
-def list_boards(user_email: str = Depends(get_current_user_email)):
+def list_boards(limit: int = Query(10), offset: int = Query(0), user_email: str = Depends(get_current_user_email)):
     # 세션 확인
     if user_email is None:
         raise HTTPException(status_code=401, detail="User not logged in")
@@ -27,5 +27,8 @@ def list_boards(user_email: str = Depends(get_current_user_email)):
     # board 목록을 해당 board에 작성된 post 개수 순으로 정렬
     # post 수가 같을 경우, board id 순으로 정렬
     boards = sorted(boards, key=lambda board: (-session.query(Post).filter_by(board_id=board.id).count(), board.id))
+
+    # pagination 적용
+    boards = boards[offset : offset + limit]
 
     return {"boards": [board.id for board in boards]}
