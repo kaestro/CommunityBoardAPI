@@ -2,7 +2,7 @@ BEGIN:VCALENDAR
 VERSION:2.0
 CALSCALE:GREGORIAN
 PRODID:adamgibbons/ics
-X-WR-CALNAME:AI가 바꾸는 연구의 패러다임: 논문 분석과 작성의 새로운 방법론
+NAME:AI가 바꾸는 연구의 패러다임: 논문 분석과 작성의 새로운 방법론
 METHOD:PUBLISH
 X-PUBLISHED-TTL:PT1H
 BEGIN:VEVENT
